@@ -1,0 +1,68 @@
+class Room:
+    def __init__(self, width, height, banana_position):
+        self.width = width
+        self.height = height
+        self.banana_position = banana_position
+
+    def is_valid_position(self, x, y):
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    def is_banana_reached(self, monkey):
+        return monkey.position == self.banana_position
+
+
+class Monkey:
+    def __init__(self, room, initial_position):
+        self.room = room
+        self.position = initial_position
+
+    def move(self, direction):
+        x, y = self.position
+        if direction == 'left' and self.room.is_valid_position(x - 1, y):
+            self.position = (x - 1, y)
+        elif direction == 'right' and self.room.is_valid_position(x + 1, y):
+            self.position = (x + 1, y)
+        elif direction == 'up' and self.room.is_valid_position(x, y - 1):
+            self.position = (x, y - 1)
+        elif direction == 'down' and self.room.is_valid_position(x, y + 1):
+            self.position = (x, y + 1)
+
+    def push_box(self, direction):
+        x, y = self.position
+        if direction == 'left':
+            new_position = (x - 1, y)
+        elif direction == 'right':
+            new_position = (x + 1, y)
+        elif direction == 'up':
+            new_position = (x, y - 1)
+        elif direction == 'down':
+            new_position = (x, y + 1)
+
+        if self.room.is_valid_position(*new_position):
+            self.position = new_position
+
+    def reach_bananas(self):
+        return self.room.is_banana_reached(self)
+
+
+# Example usage:
+room = Room(width=5, height=5, banana_position=(4, 2))
+monkey = Monkey(room, initial_position=(1, 1))
+
+# Monkey moves to the right
+monkey.move('right')
+
+# Monkey pushes the box to the right
+monkey.push_box('right')
+
+# Monkey moves to the right again
+monkey.move('right')
+
+# Monkey climbs on the box to reach the bananas
+monkey.push_box('up')
+
+# Check if the monkey has reached the bananas
+if monkey.reach_bananas():
+    print("Monkey has reached the bananas!")
+else:
+    print("Monkey couldn't reach the bananas.")
