@@ -1,0 +1,44 @@
+import math
+import random
+
+def objective_function(x):
+    # Example objective function: minimize x^2
+    return x**2
+
+def simulated_annealing(initial_state, temperature, cooling_rate, num_iterations):
+    current_state = initial_state
+    best_state = current_state
+
+    for iteration in range(num_iterations):
+        # Generate a neighboring state
+        neighbor_state = current_state + random.uniform(-1, 1)
+
+        # Calculate objective function values for current and neighbor states
+        current_energy = objective_function(current_state)
+        neighbor_energy = objective_function(neighbor_state)
+
+        # Accept the neighbor state if it's better or with a certain probability
+        if neighbor_energy < current_energy or random.uniform(0, 1) < math.exp(-(neighbor_energy - current_energy) / temperature):
+            current_state = neighbor_state
+
+        # Update the best state if needed
+        if objective_function(current_state) < objective_function(best_state):
+            best_state = current_state
+
+        # Cool down the temperature
+        temperature *= 1 - cooling_rate
+
+    return best_state
+
+if __name__ == "__main__":
+    # Set the initial parameters
+    initial_state = 5.0
+    initial_temperature = 100.0
+    cooling_rate = 0.01
+    num_iterations = 1000
+
+    # Run the simulated annealing algorithm
+    result = simulated_annealing(initial_state, initial_temperature, cooling_rate, num_iterations)
+
+    print("Final result:", result)
+    print("Objective function value:", objective_function(result))
